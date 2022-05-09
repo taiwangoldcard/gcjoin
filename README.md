@@ -6,3 +6,4 @@ The first project is 'gcjoin'. GCjoin is a form to allow sign-up to the communit
 that verifies someone's Gold Card holder status, and back-end features
 to allow the community administrators to see the details for on-boarding activities.
 
+gcjoin is written in Django4, with Python3
