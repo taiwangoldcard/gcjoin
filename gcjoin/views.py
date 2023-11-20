@@ -73,9 +73,11 @@ def join(request):
     if request.method == 'POST':
         form = GCJoinForm(request.POST)
         # maximum form postings allowed per IP address is 3. 
-        if form.is_valid() and GoldCardHolder.objects.filter(join_ip=get_client_ip_address(request)).count() < 3:
+        join_ip = get_client_ip_address(request)
+        if form.is_valid() and GoldCardHolder.objects.filter(join_ip=join_ip).count() < 3:
             print(request.POST)
             new_goldie = form.save()
+            new_goldie.join_ip = join_ip
             if GCJoinForm.isIDValid(new_goldie.identityno) is False:
                new_goldie.notes = "Invalid ARC Number."
                new_goldie.save()
