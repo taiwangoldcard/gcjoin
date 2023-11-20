@@ -304,6 +304,8 @@ class GoldCardHolder(models.Model):
     groups = models.ManyToManyField(GoldCardSubGroup, verbose_name="Do you identify yourself in one of those groups?", help_text="you'll be invited", blank=True)
     roles = models.ManyToManyField(GoldCardRole, blank=True)
     notes = models.TextField(max_length=1024, blank=True, null=True)
+    join_ip =  models.CharField(max_length=64, blank=True, null=True)
+
 
     def __str__(self):
         return self.name

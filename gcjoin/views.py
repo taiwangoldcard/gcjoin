@@ -21,6 +21,15 @@ class dotdict(dict):
     __setattr__ = dict.__setitem__
     __delattr__ = dict.__delitem__
 
+def get_client_ip_address(request):
+    req_headers = request.META
+    x_forwarded_for_value = req_headers.get('HTTP_X_FORWARDED_FOR')
+    if x_forwarded_for_value:
+        ip_addr = x_forwarded_for_value.split(',')[-1].strip()
+    else:
+        ip_addr = req_headers.get('REMOTE_ADDR')
+    return ip_addr
+
 def validate_goldcard(identityno, nation, dob):
     """ uses the NIA API to verify whether a Gold Card is valid
         identityno is an ARC number
@@ -62,9 +71,9 @@ def validate_goldcard(identityno, nation, dob):
 
 def join(request):
     if request.method == 'POST':
-        # TODO - restrict number of POSTS based on IP address.
         form = GCJoinForm(request.POST)
-        if form.is_valid():
+        # maximum form postings allowed per IP address is 3. 
+        if form.is_valid() and GoldCardHolder.objects.filter(join_ip=get_client_ip_address(request)).count() < 3:
             print(request.POST)
             new_goldie = form.save()
             if GCJoinForm.isIDValid(new_goldie.identityno) is False:
